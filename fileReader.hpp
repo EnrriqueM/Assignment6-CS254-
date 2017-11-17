@@ -1,10 +1,12 @@
+//  CSUF CPSC 254, Fall 2017 Assignment 6
 //
-//  fileReader.hpp
-//  project
+// Team Members:
+// David Williams-Haven
+// Dat Nguyen
+// Enrique Mendoza
+// Walid El Mir
 //
-//  Created by Enrique Mendoza on 11/16/17.
-//  Copyright © 2017 Enrique Mendoza. All rights reserved.
-//
+// Filename: fileReader.hpp
 
 #ifndef fileReader_hpp
 #define fileReader_hpp
@@ -22,16 +24,17 @@ public:
     int getLineNumber() const;          // Returns total number of lines red
     long int getTotal() const;
     
-//private:
+private:
     //Vectors work in parallel
-    vector<string> Sample;         //Holds Sample column
-    vector<string> RelTime;        //RelTime column
-    vector<long int> Address;        //Address column
-    vector<string> Data;           //Data column
-    vector<string> Size;        //Size column
-    vector<string> Cycle;       //Cycle Column
-    vector<int> lineNumber;     //Line number each row appeared
-    long int total = 0;              //Total things red
+    vector<string> Sample;          //Holds Sample column
+    vector<string> RelTime;         //RelTime column
+    vector<long int> Address;       //Address column
+    vector<string> Data;            //Data column
+    vector<string> Size;            //Size column
+    vector<string> Cycle;           //Cycle Column
+    vector<long int> lineNumber;    //Line number each row appeared
+    long int total = 1;             //Total things red
+    bool checkAddress(string);      //Check if we need this address stored
 };
 
 #endif /* fileReader_hpp */

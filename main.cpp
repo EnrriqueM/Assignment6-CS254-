@@ -1,10 +1,12 @@
+//  CSUF CPSC 254, Fall 2017 Assignment 6
 //
-//  main.cpp
-//  project
+// Team Members:
+// David Williams-Haven
+// Dat Nguyen
+// Enrique Mendoza
+// Walid El Mir
 //
-//  Created by Enrique Mendoza on 11/16/17.
-//  Copyright © 2017 Enrique Mendoza. All rights reserved.
-//
+// Filename: main.cpp
 
 #include <iostream>
 #include <string>
@@ -38,7 +40,7 @@ int main(int argc, const char* argu[])
     filename = argu[1];
     fileRead log1(filename);
     
-    cout << log1.Sample[log1.getTotal() - 1] << endl;
+    //cout << log1.Sample[log1.getTotal() - 1] << endl;
     cout << log1.getTotal() << endl;
     
     return 0;
