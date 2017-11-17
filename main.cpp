@@ -10,6 +10,8 @@
 #include <string>
 #include <fstream>
 
+#include "fileReader.hpp"
+
 using namespace std;
 
 int main(int argc, const char* argu[])
@@ -34,7 +36,10 @@ int main(int argc, const char* argu[])
     
     //Save source file
     filename = argu[1];
-    cout << filename << endl;
-    #wwwwwwwwwww
+    fileRead log1(filename);
+    
+    cout << log1.Sample[log1.getTotal() - 1] << endl;
+    cout << log1.getTotal() << endl;
+    
     return 0;
 }
