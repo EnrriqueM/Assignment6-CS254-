@@ -30,6 +30,7 @@ fileRead::fileRead(string filename)
     
     ifstream logFile;
     logFile.open(filename);
+
     
     //Read in the colunm names and ignore them
     for(int i = 0; i <14; i++)
@@ -84,6 +85,21 @@ fileRead::fileRead(string filename)
 
 //int fileRead::getLineNumber() const { return lineNumber; }
 long int fileRead::getTotal() const { return total; }
+
+vector<string> fileRead::getSample() { return Sample; }
+
+vector<string> fileRead::getRelTime() { return RelTime; }
+
+vector<string> fileRead::getData() { return Data; }
+
+vector<string> fileRead::getSize() { return Size; }
+
+vector<string> fileRead::getCycle() { return Cycle; }
+
+vector<long int> fileRead::getlineNumber() { return lineNumber; }
+
+vector<long int> fileRead::getAddress() { return Address;}
+
 
 //Private Function:
 //Adds wanted address to vector
