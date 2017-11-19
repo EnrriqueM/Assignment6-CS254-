@@ -21,8 +21,14 @@ using namespace std;
 class fileRead{
 public:
     fileRead(string);                   // Constructor
-    int getLineNumber() const;          // Returns total number of lines red
-    long int getTotal() const;
+    vector<string> getSample();
+	vector<string> getRelTime();
+	vector<long int> getAddress();
+	vector<string> getData();
+	vector<string> getSize();
+	vector<string> getCycle();
+	vector<long int> getlineNumber();
+	long int getTotal() const;
     
 private:
     //Vectors work in parallel
