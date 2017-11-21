@@ -14,8 +14,11 @@
 
 #include "fileReader.hpp"
 #include "word.hpp"
+#include "output.cpp"
 
 using namespace std;
+
+void output(fileRead);	//Write output
 
 int main(int argc, const char* argu[])
 {
@@ -42,7 +45,10 @@ int main(int argc, const char* argu[])
     fileRead log1(filename);
     
     //cout << log1.Sample[log1.getTotal() - 1] << endl;
-    cout << log1.getTotal() << endl;
+    //cout << log1.getTotal() << endl;
+    
+	output(log1);
+    
     
     // Test parsing
     word w;
