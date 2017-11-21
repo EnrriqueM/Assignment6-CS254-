@@ -14,6 +14,9 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <iostream>
+
+using namespace std;
 
 //Constructor
 //Read in from files
@@ -26,6 +29,7 @@ fileRead::fileRead(string filename)
     string dataTemp;
     string sizeTemp;
     string cycleTemp;
+    string typeTemp;
     string trash;       // Ignore unneccssary columns
     
     ifstream logFile;
@@ -35,14 +39,27 @@ fileRead::fileRead(string filename)
     //Read in the colunm names and ignore them
     for(int i = 0; i <14; i++)
         logFile >> trash;
-    
-    while (logFile >> sampleTemp)
+	bool wasFound = false;
+	bool found = false;
+    for (int i = 0;logFile >> sampleTemp && i < 200; i++)	//Stop at line 200 for testing purposes
     {
-        bool found = false;
-        
+		//cout << i << endl;
+		if (found == true)
+		{
+			wasFound = true;
+		}
+		else
+		{
+			wasFound = false;
+		}
+        found = false;
         logFile >> trash;               //Ignore Bgl column
         logFile >> relTimeTemp;         //Retrieve RelTime col.
-        
+        if (wasFound)					//Check if the address was found in the previous row and assign the time
+		{
+			RelTime.push_back(relTimeTemp);
+			//cout << "Time: " << relTimeTemp << endl;
+		}
         //Ignore AbsTime, Transfer and AM/XAM columns
         logFile >> trash;
         logFile >> trash;
@@ -50,6 +67,7 @@ fileRead::fileRead(string filename)
         
         //Get address column and save as hex value
         logFile >> hex >> addressTemp;
+
         //Get data column
         //NOTE: Stored as string as hex value too big
         logFile >> dataTemp;
@@ -71,11 +89,18 @@ fileRead::fileRead(string filename)
         if(found)
         {
             Sample.push_back(sampleTemp);
-            RelTime.push_back(relTimeTemp);
             Data.push_back(dataTemp);
             Size.push_back(sizeTemp);
-            Cycle.push_back(cycleTemp);
+            if (cycleTemp == "Rd")			//Store strings as Read or Write instead of Rd or Wr
+            {
+				Cycle.push_back("Read");
+            }
+            else
+            {
+				Cycle.push_back("Write");
+			}
             lineNumber.push_back(total);
+			wasFound = true;
         }
     }
     
@@ -96,6 +121,8 @@ vector<string> fileRead::getSize() { return Size; }
 
 vector<string> fileRead::getCycle() { return Cycle; }
 
+vector<string> fileRead::getType() { return Type; }
+
 vector<long int> fileRead::getlineNumber() { return lineNumber; }
 
 vector<long int> fileRead::getAddress() { return Address;}
@@ -107,20 +134,24 @@ bool fileRead::checkAddress(string a)
 {
     long int addressTemp;
     istringstream buffer(a);        //Converts strings to ints
-    
-    //Try to convert address into a hex value
+
+    //Converts address to decimal
     buffer >> hex >> addressTemp;
     
     //Only add wanted addresses to vector
-    if(addressTemp == 0x40000810 || (addressTemp >= 0x40000818 && addressTemp <= 0x40000C14) ||
-       addressTemp == 0x40000C18 || (addressTemp >= 0x40000C20 && addressTemp <= 0x4000101C))
+    if(addressTemp == 0x40000810 || (addressTemp >= 0x40000818 && addressTemp <= 0x4000086B))
     {
         Address.push_back(addressTemp);
+        //cout << endl << a << endl;
+        Type.push_back("S-to-D");
         return true;
     }
+    else if (addressTemp == 0x40000C18 || (addressTemp >= 0x40000C20 && addressTemp <= 0x40000C73))
+    {
+		Address.push_back(addressTemp);
+		Type.push_back("D-to-S");
+        return true;
+	}
     
     return false;
 }
-
-
-
