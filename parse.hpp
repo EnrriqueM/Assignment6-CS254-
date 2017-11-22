@@ -1,10 +1,10 @@
+//  CSUF CPSC 254, Fall 2017 Assignment 6
 //
-//  parse.hpp
-//  logFile
-//
-//  Created by Walid El Mir on 11/20/17.
-//  Copyright © 2017 Walid El Mir. All rights reserved.
-//
+// Walid El Mir
+// Team Members:
+// David Williams-Haven
+// Dat Nguyen
+// Enrique Mendoza
 
 #ifndef parse_hpp
 #define parse_hpp
