@@ -1,10 +1,10 @@
+//  CSUF CPSC 254, Fall 2017 Assignment 6
 //
-//  parse.cpp
-//  logFile
-//
-//  Created by Walid El Mir on 11/20/17.
-//  Copyright © 2017 Walid El Mir. All rights reserved.
-//
+// Walid El Mir
+// Team Members:
+// David Williams-Haven
+// Dat Nguyen
+// Enrique Mendoza
 
 #include "parse.hpp"
 #include "word.hpp"
@@ -16,19 +16,10 @@ parse::parse(fileRead file){
         long int line = file.getlineNumber()[i];
         long int size = word::toInt(file.getData()[i]);
         
-        string cycle = file.getCycle()[i];
-        if (cycle == "Wr")
-            cycle = "Write";
-        else cycle = "Read";
-        
         size = size / 2;
-        if (address == 0x40000810)
-            cout << "line " << line << ": " << cycle << " S-to-D command: " << size << " words" << endl;
-        else if(address == 0x40000c18)
-            cout << "line " << line << ": " << cycle << " D-to-S command: " << size << " words" << endl;
-        
+ 
         if ( address == 0x40000810 || address == 0x40000c18){
-    
+            cout << "line " << line << ": " << file.getCycle()[i] << file.getType()[i] << size << " words" << endl;
             if (size != 0 && ( file.getAddress()[i+1] == 0x40000818 || file.getAddress()[i+1]==0x40000C20)){
                 size = size /2 ;
                 int f=0;
