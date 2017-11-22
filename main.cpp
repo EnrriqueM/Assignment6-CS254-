@@ -47,6 +47,7 @@ int main(int argc, const char* argu[])
     
 	output(log1);
 	
+	freopen("data.txt","w",stdout); // write into data.txt 
 	parse p(log1);
 	
     
