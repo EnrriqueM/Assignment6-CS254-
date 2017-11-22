@@ -143,13 +143,13 @@ bool fileRead::checkAddress(string a)
     {
         Address.push_back(addressTemp);
         //cout << endl << a << endl;
-        Type.push_back("S-to-D");
+        Type.push_back(" S-to-D: ");
         return true;
     }
     else if (addressTemp == 0x40000C18 || (addressTemp >= 0x40000C20 && addressTemp <= 0x40000C73))
     {
 		Address.push_back(addressTemp);
-		Type.push_back("D-to-S");
+		Type.push_back(" D-to-S: ");
         return true;
 	}
     
