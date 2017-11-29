@@ -11,15 +11,18 @@
 #include "fileReader.hpp"
 #include "word.hpp"
 
+
 #include <fstream>
 #include <string>
 #include <vector>
 #include <sstream>
 #include <iostream>
 
+
 using namespace std;
 
 //Temporary values
+string lineTemp;
 string sampleTemp;
 string relTimeTemp;
 string addressTemp;
@@ -27,6 +30,12 @@ string dataTemp;
 string sizeTemp;
 string cycleTemp;
 string typeTemp;
+string previous;
+bool first = true;
+int order=0;
+long int size;
+bool rev ;
+
 
 //Constructor
 //Read in from files
@@ -36,32 +45,17 @@ fileRead::fileRead(string filename)
     
     ifstream logFile;
     logFile.open(filename);
-
+    
     
     //Read in the colunm names and ignore them
     for(int i = 0; i <14; i++)
         logFile >> trash;
-	bool wasFound = false;
-	bool found = false;
-    for (int i = 0;logFile >> sampleTemp; i++)	//Stop at line 200 for testing purposes
+    
+    for (int i = 0;logFile >> sampleTemp; i++)    //Stop at line 200 for testing purposes
     {
-		//cout << i << endl;
-		if (found == true)
-		{
-			wasFound = true;
-		}
-		else
-		{
-			wasFound = false;
-		}
-        found = false;
         logFile >> trash;               //Ignore Bgl column
         logFile >> relTimeTemp;         //Retrieve RelTime col.
-        if (wasFound)					//Check if the address was found in the previous row and assign the time
-		{
-			RelTime.push_back(relTimeTemp);
-			//cout << "Time: " << relTimeTemp << endl;
-		}
+        
         //Ignore AbsTime, Transfer and AM/XAM columns
         logFile >> trash;
         logFile >> trash;
@@ -69,13 +63,23 @@ fileRead::fileRead(string filename)
         
         //Get address column and save as hex value
         logFile >> hex >> addressTemp;
-
+        if (i !=0)
+            previous =addressTemp;
+        
         //Get data column
         //NOTE: Stored as string as hex value too big
         logFile >> dataTemp;
         //Get size and data coumn
         logFile >> sizeTemp;
         logFile >> cycleTemp;
+        if (cycleTemp == "Rd")            //Store strings as Read or Write instead of Rd or Wr
+        {
+            cycleTemp= "Read";
+        }
+        else
+        {
+            cycleTemp="Write";
+        }
         
         //Ignore th last 4 columns
         logFile >> trash;
@@ -85,89 +89,125 @@ fileRead::fileRead(string filename)
         
         total++;
         
-        found = checkAddress(addressTemp);
+        checkAddress(addressTemp);
         
-        //If matches address, add values to appriprate vectors
-        /*if(found)
-        {
-            Sample.push_back(sampleTemp);
-            Data.push_back(dataTemp);
-            Size.push_back(sizeTemp);
-            if (cycleTemp == "Rd")			//Store strings as Read or Write instead of Rd or Wr
-            {
-				Cycle.push_back("Read");
-            }
-            else
-            {
-				Cycle.push_back("Write");
-			}
-            lineNumber.push_back(total);
-			wasFound = true;
-        }*/
     }
-    
-    //Close file
-    logFile.close();
+
 }
-
-//int fileRead::getLineNumber() const { return lineNumber; }
-long int fileRead::getTotal() const { return total; }
-
-vector<string> fileRead::getSample() { return Sample; }
-
-vector<string> fileRead::getRelTime() { return RelTime; }
-
-vector<string> fileRead::getData() { return Data; }
-
-vector<string> fileRead::getSize() { return Size; }
-
-vector<string> fileRead::getCycle() { return Cycle; }
-
-vector<string> fileRead::getType() { return Type; }
-
-vector<long int> fileRead::getlineNumber() { return lineNumber; }
-
-vector<long int> fileRead::getAddress() { return Address;}
-
 
 //Private Function:
 //Adds wanted address to vector
 bool fileRead::checkAddress(string a)
 {
-    long int addressTemp;
-    istringstream buffer(a);        //Converts strings to ints
-
-    //Converts address to decimal
-    buffer >> hex >> addressTemp;
+    long int addressTemp = word::toInt(a) ;
     
-    //Only add wanted addresses to vector
+    
+    
     if(addressTemp == 0x40000810)
-    { //address, data, size
-        long int size = word::toInt(dataTemp);
-        
-        //cout << endl << a << endl;
-        parser(addressTemp, dataTemp, sizeTemp, cycleTemp, "S-to-D:");
+    {
+        rev=false;
+        order=0;
+        parser(addressTemp, dataTemp, sizeTemp, cycleTemp, " S-to-D: ");
         
         return true;
     }
     else if(addressTemp >= 0x40000818 && addressTemp <= 0x4000086B)
     {
-        parser(addressTemp, dataTemp, sizeTemp, cycleTemp, "S-to-D:");
+        order++;
+        parser(addressTemp, dataTemp, sizeTemp, cycleTemp, " S-to-D: ");
         
         return true;
     }
     else if (addressTemp == 0x40000C18)
     {
-		parser(addressTemp, dataTemp, sizeTemp, cycleTemp, "D-to-S:");
+        rev=false;
+        order=0;
+        parser(addressTemp, dataTemp, sizeTemp, cycleTemp, " D-to-S: ");
         
         return true;
-	}
+    }
     else if (addressTemp >= 0x40000C20 && addressTemp <= 0x40000C73)
     {
-        parser(addressTemp, dataTemp, sizeTemp, cycleTemp, "D-to-S:");
+        order++;
+        parser(addressTemp, dataTemp, sizeTemp, cycleTemp, " D-to-S: ");
         
         return true;
     }
     
     return false;
 }
+
+void fileRead::parser(long int addressTemp, string dataTemp, string sizeTemp, string cycleTemp, string t){
+
+    if(order ==1 && (addressTemp == ( 0x40000810 + 8) || (addressTemp == ( 0x40000C18 + 8) )))
+        rev = true;
+
+
+    if ( addressTemp == 0x40000810 || addressTemp == 0x40000c18){
+        if ( ! first)
+            cout << endl;
+        size = word::toInt(dataTemp)/2;
+        cout << "line " << total << ": " << cycleTemp << t << size << " words" << endl;
+        first = false;
+
+
+    }
+
+
+    if (rev)
+    {
+
+        string data0 = dataTemp.substr(0,4);
+        string data1 = dataTemp.substr(4,7);
+        switch (addressTemp){
+
+            case 0x40000818 : cout << "line " << total <<": "; word::word0(data0);cout << "line " << total <<": "; word::word1(data1); break;
+            case 0x40000820 : cout << "line " << total <<": "; word::word4(data0);cout << "line " << total <<": " ; word::word5(data1); break;
+            case 0x4000082c : cout << "line " << total <<": "; word::word10(data0);break;
+            case 0x40000834 : cout << "line " << total <<": "; word::word15(data1);break;
+            case 0x40000844 : cout << "line " << total <<": "; word::word22(data0);break;
+            case 0x40000858 : cout << "line " << total <<": "; word::word32(data0);break;
+            case 0x40000860 : cout << "line " << total <<": "; word::word37(data1);break;
+            case 0x40000864 : cout << "line " << total <<": "; word::word38(data0);break;
+            case 0x40000868: cout << "line " << total <<": "; word::word40(data0);cout << "line " << total <<": ";word::word41(data1); break;
+
+            case 0x40000c20 : cout << "line " << total <<": "; word::word0(data0);cout << "line " << total <<": "; word::word1(data1); break;
+            case 0x40000c28 : cout << "line " << total <<": "; word::word4(data0);cout << "line " << total <<": " ; word::word5(data1); break;
+            case 0x40000c34 : cout << "line " << total <<": "; word::word10(data0);break;
+            case 0x40000c3c : cout << "line " << total <<": "; word::word15(data1);break;
+            case 0x40000c4c : cout << "line " << total <<": "; word::word22(data0);break;
+            case 0x40000c60 : cout << "line " << total <<": "; word::word32(data0);break;
+            case 0x40000c68 : cout << "line " << total <<": "; word::word37(data1);break;
+            case 0x40000c6c : cout << "line " << total <<": "; word::word38(data0);break;
+            case 0x40000c70: cout << "line " << total <<": "; word::word40(data0);cout << "line " << total <<": ";word::word41(data1); break;                                    }
+    }
+    else
+    {
+
+        string data0 = dataTemp.substr(0,4);
+        string data1 = dataTemp.substr(4,7);
+        switch (addressTemp){
+
+            case 0x40000818 : cout << "line " << total <<": "; word::word1(data1);cout << "line " << total <<": "; word::word0(data0); break;
+            case 0x40000820 : cout << "line " << total <<": " ; word::word5(data1);cout << "line " << total <<": "; word::word4(data0); break;
+            case 0x4000082c : cout << "line " << total <<": "; word::word10(data0);break;
+            case 0x40000834 : cout << "line " << total <<": "; word::word15(data1);break;
+            case 0x40000844 : cout << "line " << total <<": "; word::word22(data0);break;
+            case 0x40000858 : cout << "line " << total <<": "; word::word32(data0);break;
+            case 0x40000860 : cout << "line " << total <<": "; word::word37(data1);break;
+            case 0x40000864 : cout << "line " << total <<": "; word::word38(data0);break;
+            case 0x40000868: cout << "line " << total <<": ";word::word41(data1);cout << "line " << total <<": "; word::word40(data0); break;
+
+            case 0x40000c20 : cout << "line " << total <<": "; word::word1(data1); cout << "line " << total <<": "; word::word0(data0);break;
+            case 0x40000c28 : cout << "line " << total <<": " ; word::word5(data1);cout << "line " << total <<": "; word::word4(data0); break;
+            case 0x40000c34 : cout << "line " << total <<": "; word::word10(data0);break;
+            case 0x40000c3c : cout << "line " << total <<": "; word::word15(data1);break;
+            case 0x40000c4c : cout << "line " << total <<": "; word::word22(data0);break;
+            case 0x40000c60 : cout << "line " << total <<": "; word::word32(data0);break;
+            case 0x40000c68 : cout << "line " << total <<": "; word::word37(data1);break;
+            case 0x40000c6c : cout << "line " << total <<": "; word::word38(data0);break;
+            case 0x40000c70: cout << "line " << total <<": ";word::word41(data1);cout << "line " << total <<": "; word::word40(data0); break;                                    }
+    }
+}
+
+
