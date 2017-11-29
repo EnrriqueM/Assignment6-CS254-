@@ -14,7 +14,6 @@
 
 #include "fileReader.hpp"
 #include "word.hpp"
-#include "output.cpp"
 #include "parse.hpp"
 
 using namespace std;
@@ -55,4 +54,14 @@ int main(int argc, const char* argu[])
     
     
     return 0;
+}
+
+void output(fileRead log1)
+{
+	int words = 0;
+    int count = log1.getAddress().size();
+    for (int i = 0; i < count; i++)
+    {
+		cout << i << " Time: " << log1.getRelTime()[i] << endl;
+	}
 }

@@ -9,7 +9,6 @@
 // Filename: fileReader.cpp
 
 #include "fileReader.hpp"
-#include "word.hpp"
 
 #include <fstream>
 #include <string>
@@ -19,31 +18,33 @@
 
 using namespace std;
 
-//Temporary values
-string sampleTemp;
-string relTimeTemp;
-string addressTemp;
-string dataTemp;
-string sizeTemp;
-string cycleTemp;
-string typeTemp;
-
 //Constructor
 //Read in from files
 fileRead::fileRead(string filename)
 {
+    //Temporary values
+    string sampleTemp;
+    string relTimeTemp;
+    string addressTemp;
+    string dataTemp;
+    string sizeTemp;
+    string cycleTemp;
+    string typeTemp;
     string trash;       // Ignore unneccssary columns
+    int rateTemp;
     
     ifstream logFile;
     logFile.open(filename);
-
+	
+	
     
     //Read in the colunm names and ignore them
     for(int i = 0; i <14; i++)
         logFile >> trash;
 	bool wasFound = false;
 	bool found = false;
-    for (int i = 0;logFile >> sampleTemp; i++)	//Stop at line 200 for testing purposes
+	int cmdCount = 0;			//Keeps track of number of found addressess
+    for (int i = 0;logFile >> sampleTemp && i < 200; i++)	//Stop at line 200 for testing purposes
     {
 		//cout << i << endl;
 		if (found == true)
@@ -59,8 +60,14 @@ fileRead::fileRead(string filename)
         logFile >> relTimeTemp;         //Retrieve RelTime col.
         if (wasFound)					//Check if the address was found in the previous row and assign the time
 		{
+			string timeTemp = relTimeTemp;
+			timeTemp.pop_back();
+			timeTemp.pop_back();
+			int secondLastChar = relTimeTemp.length()-2;
+			//if (relTimeTemp[secondLastChar] == u)
+			//	timeTemp = 
 			RelTime.push_back(relTimeTemp);
-			//cout << "Time: " << relTimeTemp << endl;
+			cout << "Time: " << timeTemp << endl;
 		}
         //Ignore AbsTime, Transfer and AM/XAM columns
         logFile >> trash;
@@ -88,22 +95,40 @@ fileRead::fileRead(string filename)
         found = checkAddress(addressTemp);
         
         //If matches address, add values to appriprate vectors
-        /*if(found)
+        if(found)
         {
             Sample.push_back(sampleTemp);
             Data.push_back(dataTemp);
             Size.push_back(sizeTemp);
+            int bytes = 0;
+            if (sizeTemp == "D32")
+            	bytes = 32;
+            else if (sizeTemp == "D64")
+            	bytes = 64;
+            	
+            //int rate = bytes / ;
+            
             if (cycleTemp == "Rd")			//Store strings as Read or Write instead of Rd or Wr
             {
+
 				Cycle.push_back("Read");
+				if (Type[cmdCount] == " S-to-D ")
+				{
+					//dataRate[0] += 
+				}
+				else if (Type[cmdCount] == " D-to-S ")
+				{
+				}
             }
             else
             {
 				Cycle.push_back("Write");
+				//cout << "Type is " << Type[cmdCount] << endl;
 			}
             lineNumber.push_back(total);
 			wasFound = true;
-        }*/
+			cmdCount++;
+        }
     }
     
     //Close file
@@ -127,6 +152,8 @@ vector<string> fileRead::getType() { return Type; }
 
 vector<long int> fileRead::getlineNumber() { return lineNumber; }
 
+int	fileRead::getDataRate() { return *dataRate; }
+
 vector<long int> fileRead::getAddress() { return Address;}
 
 
@@ -141,33 +168,19 @@ bool fileRead::checkAddress(string a)
     buffer >> hex >> addressTemp;
     
     //Only add wanted addresses to vector
-    if(addressTemp == 0x40000810)
-    { //address, data, size
-        long int size = word::toInt(dataTemp);
-        
+    if(addressTemp == 0x40000810 || (addressTemp >= 0x40000818 && addressTemp <= 0x4000086B))
+    {
+        Address.push_back(addressTemp);
         //cout << endl << a << endl;
-        parser(addressTemp, dataTemp, sizeTemp, cycleTemp, "S-to-D:");
-        
+        Type.push_back(" S-to-D: ");
         return true;
     }
-    else if(addressTemp >= 0x40000818 && addressTemp <= 0x4000086B)
+    else if (addressTemp == 0x40000C18 || (addressTemp >= 0x40000C20 && addressTemp <= 0x40000C73))
     {
-        parser(addressTemp, dataTemp, sizeTemp, cycleTemp, "S-to-D:");
-        
-        return true;
-    }
-    else if (addressTemp == 0x40000C18)
-    {
-		parser(addressTemp, dataTemp, sizeTemp, cycleTemp, "D-to-S:");
-        
+		Address.push_back(addressTemp);
+		Type.push_back(" D-to-S: ");
         return true;
 	}
-    else if (addressTemp >= 0x40000C20 && addressTemp <= 0x40000C73)
-    {
-        parser(addressTemp, dataTemp, sizeTemp, cycleTemp, "D-to-S:");
-        
-        return true;
-    }
     
     return false;
 }

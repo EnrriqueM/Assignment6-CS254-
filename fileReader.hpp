@@ -29,18 +29,20 @@ public:
 	vector<string> getCycle();
 	vector<string> getType();
 	vector<long int> getlineNumber();
+	int getDataRate();
 	long int getTotal() const;
     
 private:
     //Vectors work in parallel
     vector<string> Sample;          //Holds Sample column
     vector<string> RelTime;         //RelTime column
-    vector<long int> Address;         //Address column
+    vector<long int> Address;       //Address column
     vector<string> Data;            //Data column
     vector<string> Size;            //Size column
     vector<string> Cycle;           //Cycle Column
     vector<string> Type;			//D-to-S or S-to-D
     vector<long int> lineNumber;    //Line number each row appeared
+	int dataRate[4] = {0};			//Stores Total Transfer Rate of each type of commands (Index 0 is Read S to D, Index 1 is Read D to S, Index 2 is Write S to D, Index 3 is Write D to S) rate of the commands
     long int total = 1;             //Total things red
     bool checkAddress(string);      //Check if we need this address stored
 };
