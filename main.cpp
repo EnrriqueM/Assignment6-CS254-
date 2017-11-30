@@ -14,8 +14,6 @@
 
 #include "fileReader.hpp"
 #include "word.hpp"
-#include "output.cpp"
-#include "parse.hpp"
 
 using namespace std;
 
@@ -43,16 +41,9 @@ int main(int argc, const char* argu[])
     
     //Save source file
     filename = argu[1];
+	
+    freopen("data.txt","w",stdout); // write into data.txt
     fileRead log1(filename);
-    
-	output(log1);
 	
-	freopen("data.txt","w",stdout); // write into data.txt 
-	parse p(log1);
-	
-    
-    
-    
-    
     return 0;
 }
