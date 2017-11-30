@@ -23,8 +23,22 @@ class fileRead{
 public:
     fileRead(string);                   // Constructor
     
-	long int getTotal() const;
-    
+private:
+    //Temporary values
+string lineTemp;
+string sampleTemp;
+string relTimeTemp;
+string addressTemp;
+string dataTemp;
+string sizeTemp;
+string cycleTemp;
+string typeTemp;
+
+bool first = true;
+int order=0;
+long int size;
+bool rev ;
+
     void parser(long int, string, string ,string , string);
     bool checkAddress(string);      //Check if we need this address
    long int total = 1;
