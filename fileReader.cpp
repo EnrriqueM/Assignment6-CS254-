@@ -151,38 +151,38 @@ void fileRead::parser(long int addressTemp, string dataTemp, string sizeTemp, st
         if ( ! first)
             cout << endl;
         size = word::toInt(dataTemp)/2;
-        cout << "line " << total << ": " << cycleTemp << t << size << " words" << endl;
+        cout << "Line " << total << ": " << cycleTemp << t << size << " words" << endl;
         first = false;
 
     }
 
 
-    if (rev)
+    else if (rev)
     {
 
         string data0 = dataTemp.substr(0,4);
         string data1 = dataTemp.substr(4,7);
         switch (addressTemp){
 
-            case 0x40000818 : cout << "line " << total <<": "; word::word0(data0);cout << "line " << total <<": "; word::word1(data1); break;
-            case 0x40000820 : cout << "line " << total <<": "; word::word4(data0);cout << "line " << total <<": " ; word::word5(data1); break;
-            case 0x4000082c : cout << "line " << total <<": "; word::word10(data0);break;
-            case 0x40000834 : cout << "line " << total <<": "; word::word15(data1);break;
-            case 0x40000844 : cout << "line " << total <<": "; word::word22(data0);break;
-            case 0x40000858 : cout << "line " << total <<": "; word::word32(data0);break;
-            case 0x40000860 : cout << "line " << total <<": "; word::word37(data1);break;
-            case 0x40000864 : cout << "line " << total <<": "; word::word38(data0);break;
-            case 0x40000868: cout << "line " << total <<": "; word::word40(data0);cout << "line " << total <<": ";word::word41(data1); break;
+            case 0x40000818 : cout << "Line " << total <<": "; word::word0(data0);cout << "Line " << total <<": "; word::word1(data1); break;
+            case 0x40000820 : cout << "Line " << total <<": "; word::word4(data0);cout << "Line " << total <<": " ; word::word5(data1); break;
+            case 0x4000082c : cout << "Line " << total <<": "; word::word10(data0);break;
+            case 0x40000834 : cout << "Line " << total <<": "; word::word15(data1);break;
+            case 0x40000844 : cout << "Line " << total <<": "; word::word22(data0);break;
+            case 0x40000858 : cout << "Line " << total <<": "; word::word32(data0);break;
+            case 0x40000860 : cout << "Line " << total <<": "; word::word37(data1);break;
+            case 0x40000864 : cout << "Line " << total <<": "; word::word38(data0);break;
+            case 0x40000868: cout << "Line " << total <<": "; word::word40(data0);cout << "Line " << total <<": ";word::word41(data1); break;
 
-            case 0x40000c20 : cout << "line " << total <<": "; word::word0(data0);cout << "line " << total <<": "; word::word1(data1); break;
-            case 0x40000c28 : cout << "line " << total <<": "; word::word4(data0);cout << "line " << total <<": " ; word::word5(data1); break;
-            case 0x40000c34 : cout << "line " << total <<": "; word::word10(data0);break;
-            case 0x40000c3c : cout << "line " << total <<": "; word::word15(data1);break;
-            case 0x40000c4c : cout << "line " << total <<": "; word::word22(data0);break;
-            case 0x40000c60 : cout << "line " << total <<": "; word::word32(data0);break;
-            case 0x40000c68 : cout << "line " << total <<": "; word::word37(data1);break;
-            case 0x40000c6c : cout << "line " << total <<": "; word::word38(data0);break;
-            case 0x40000c70: cout << "line " << total <<": "; word::word40(data0);cout << "line " << total <<": ";word::word41(data1); break;                                    }
+            case 0x40000c20 : cout << "Line " << total <<": "; word::word0(data0);cout << "Line " << total <<": "; word::word1(data1); break;
+            case 0x40000c28 : cout << "Line " << total <<": "; word::word4(data0);cout << "Line " << total <<": " ; word::word5(data1); break;
+            case 0x40000c34 : cout << "Line " << total <<": "; word::word10(data0);break;
+            case 0x40000c3c : cout << "Line " << total <<": "; word::word15(data1);break;
+            case 0x40000c4c : cout << "Line " << total <<": "; word::word22(data0);break;
+            case 0x40000c60 : cout << "Line " << total <<": "; word::word32(data0);break;
+            case 0x40000c68 : cout << "Line " << total <<": "; word::word37(data1);break;
+            case 0x40000c6c : cout << "Line " << total <<": "; word::word38(data0);break;
+            case 0x40000c70: cout << "Line " << total <<": "; word::word40(data0);cout << "Line " << total <<": ";word::word41(data1); break;                                    }
     }
     else
     {
@@ -191,25 +191,25 @@ void fileRead::parser(long int addressTemp, string dataTemp, string sizeTemp, st
         string data1 = dataTemp.substr(4,7);
         switch (addressTemp){
 
-            case 0x40000818 : cout << "line " << total <<": "; word::word1(data1);cout << "line " << total <<": "; word::word0(data0); break;
-            case 0x40000820 : cout << "line " << total <<": " ; word::word5(data1);cout << "line " << total <<": "; word::word4(data0); break;
-            case 0x4000082c : cout << "line " << total <<": "; word::word10(data0);break;
-            case 0x40000834 : cout << "line " << total <<": "; word::word15(data1);break;
-            case 0x40000844 : cout << "line " << total <<": "; word::word22(data0);break;
-            case 0x40000858 : cout << "line " << total <<": "; word::word32(data0);break;
-            case 0x40000860 : cout << "line " << total <<": "; word::word37(data1);break;
-            case 0x40000864 : cout << "line " << total <<": "; word::word38(data0);break;
-            case 0x40000868: cout << "line " << total <<": ";word::word41(data1);cout << "line " << total <<": "; word::word40(data0); break;
+            case 0x40000818 : cout << "Line " << total <<": "; word::word1(data1);cout << "Line " << total <<": "; word::word0(data0); break;
+            case 0x40000820 : cout << "Line " << total <<": " ; word::word5(data1);cout << "Line " << total <<": "; word::word4(data0); break;
+            case 0x4000082c : cout << "Line " << total <<": "; word::word10(data0);break;
+            case 0x40000834 : cout << "Line " << total <<": "; word::word15(data1);break;
+            case 0x40000844 : cout << "Line " << total <<": "; word::word22(data0);break;
+            case 0x40000858 : cout << "Line " << total <<": "; word::word32(data0);break;
+            case 0x40000860 : cout << "Line " << total <<": "; word::word37(data1);break;
+            case 0x40000864 : cout << "Line " << total <<": "; word::word38(data0);break;
+            case 0x40000868: cout << "Line " << total <<": ";word::word41(data1);cout << "Line " << total <<": "; word::word40(data0); break;
 
-            case 0x40000c20 : cout << "line " << total <<": "; word::word1(data1); cout << "line " << total <<": "; word::word0(data0);break;
-            case 0x40000c28 : cout << "line " << total <<": " ; word::word5(data1);cout << "line " << total <<": "; word::word4(data0); break;
-            case 0x40000c34 : cout << "line " << total <<": "; word::word10(data0);break;
-            case 0x40000c3c : cout << "line " << total <<": "; word::word15(data1);break;
-            case 0x40000c4c : cout << "line " << total <<": "; word::word22(data0);break;
-            case 0x40000c60 : cout << "line " << total <<": "; word::word32(data0);break;
-            case 0x40000c68 : cout << "line " << total <<": "; word::word37(data1);break;
-            case 0x40000c6c : cout << "line " << total <<": "; word::word38(data0);break;
-            case 0x40000c70: cout << "line " << total <<": ";word::word41(data1);cout << "line " << total <<": "; word::word40(data0); break;                                    }
+            case 0x40000c20 : cout << "Line " << total <<": "; word::word1(data1); cout << "Line " << total <<": "; word::word0(data0);break;
+            case 0x40000c28 : cout << "Line " << total <<": " ; word::word5(data1);cout << "Line " << total <<": "; word::word4(data0); break;
+            case 0x40000c34 : cout << "Line " << total <<": "; word::word10(data0);break;
+            case 0x40000c3c : cout << "Line " << total <<": "; word::word15(data1);break;
+            case 0x40000c4c : cout << "Line " << total <<": "; word::word22(data0);break;
+            case 0x40000c60 : cout << "Line " << total <<": "; word::word32(data0);break;
+            case 0x40000c68 : cout << "Line " << total <<": "; word::word37(data1);break;
+            case 0x40000c6c : cout << "Line " << total <<": "; word::word38(data0);break;
+            case 0x40000c70: cout << "Line " << total <<": ";word::word41(data1);cout << "Line " << total <<": "; word::word40(data0); break;                                    }
     }
 }
 
