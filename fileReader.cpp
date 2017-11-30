@@ -21,22 +21,6 @@
 
 using namespace std;
 
-//Temporary values
-string lineTemp;
-string sampleTemp;
-string relTimeTemp;
-string addressTemp;
-string dataTemp;
-string sizeTemp;
-string cycleTemp;
-string typeTemp;
-string previous;
-bool first = true;
-int order=0;
-long int size;
-bool rev ;
-
-
 //Constructor
 //Read in from files
 fileRead::fileRead(string filename)
@@ -63,11 +47,8 @@ fileRead::fileRead(string filename)
         
         //Get address column and save as hex value
         logFile >> hex >> addressTemp;
-        if (i !=0)
-            previous =addressTemp;
         
         //Get data column
-        //NOTE: Stored as string as hex value too big
         logFile >> dataTemp;
         //Get size and data coumn
         logFile >> sizeTemp;
@@ -95,13 +76,9 @@ fileRead::fileRead(string filename)
 
 }
 
-//Private Function:
-//Adds wanted address to vector
 bool fileRead::checkAddress(string a)
 {
     long int addressTemp = word::toInt(a) ;
-    
-    
     
     if(addressTemp == 0x40000810)
     {
@@ -142,14 +119,12 @@ void fileRead::parser(long int addressTemp, string dataTemp, string sizeTemp, st
     if(order ==1 && (addressTemp == ( 0x40000810 + 8) || (addressTemp == ( 0x40000C18 + 8) )))
         rev = true;
 
-
     if ( addressTemp == 0x40000810 || addressTemp == 0x40000c18){
         if ( ! first)
             cout << endl;
         size = word::toInt(dataTemp)/2;
         cout << "line " << total << ": " << cycleTemp << t << size << " words" << endl;
         first = false;
-
 
     }
 
