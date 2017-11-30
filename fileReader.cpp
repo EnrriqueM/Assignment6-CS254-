@@ -11,6 +11,7 @@
 #include "fileReader.hpp"
 
 #include <fstream>
+#include <cmath>
 #include <string>
 #include <vector>
 #include <sstream>
@@ -60,14 +61,28 @@ fileRead::fileRead(string filename)
         logFile >> relTimeTemp;         //Retrieve RelTime col.
         if (wasFound)					//Check if the address was found in the previous row and assign the time
 		{
-			string timeTemp = relTimeTemp;
-			timeTemp.pop_back();
-			timeTemp.pop_back();
-			int secondLastChar = relTimeTemp.length()-2;
-			//if (relTimeTemp[secondLastChar] == u)
-			//	timeTemp = 
 			RelTime.push_back(relTimeTemp);
-			cout << "Time: " << timeTemp << endl;
+			
+			string timeTemp = relTimeTemp;					
+			timeTemp.pop_back();
+			timeTemp.pop_back();
+			double timeDouble = stod(timeTemp);				//Delete the units and convert string to double for arithmetic
+			
+			int secondLastChar = relTimeTemp.length()-2;	//Check if the unit is nano micro or milli
+			
+			if (relTimeTemp[secondLastChar] == 'n')
+			{
+				timeDouble *= pow(10,-9);
+			}
+			else if (relTimeTemp[secondLastChar] == 'u')
+			{
+				timeDouble *= pow(10,-6);
+			}
+			else if (relTimeTemp[secondLastChar] == 'm')
+			{
+				timeDouble *= pow(10,-3);
+			}
+			cout << "Line: "<< i+1 << " Time: " << timeDouble << "s\n";
 		}
         //Ignore AbsTime, Transfer and AM/XAM columns
         logFile >> trash;
@@ -106,7 +121,7 @@ fileRead::fileRead(string filename)
             else if (sizeTemp == "D64")
             	bytes = 64;
             	
-            //int rate = bytes / ;
+            int rate = bytes / timeDouble;
             
             if (cycleTemp == "Rd")			//Store strings as Read or Write instead of Rd or Wr
             {
@@ -114,15 +129,25 @@ fileRead::fileRead(string filename)
 				Cycle.push_back("Read");
 				if (Type[cmdCount] == " S-to-D ")
 				{
-					//dataRate[0] += 
+					dataRate[0] += rate;
 				}
 				else if (Type[cmdCount] == " D-to-S ")
 				{
+					dataRate[1] += rate;
 				}
+				//cout << "Type is " << Type[cmdCount] << endl;
             }
             else
             {
 				Cycle.push_back("Write");
+				if (Type[cmdCount] == " S-to-D ")
+				{
+					dataRate[3] += rate;
+				}
+				else if (Type[cmdCount] == " D-to-S ")
+				{
+					dataRate[4] += rate;
+				}
 				//cout << "Type is " << Type[cmdCount] << endl;
 			}
             lineNumber.push_back(total);
