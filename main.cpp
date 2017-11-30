@@ -14,7 +14,6 @@
 
 #include "fileReader.hpp"
 #include "word.hpp"
-#include "parse.hpp"
 
 using namespace std;
 
@@ -42,26 +41,9 @@ int main(int argc, const char* argu[])
     
     //Save source file
     filename = argu[1];
+	
+    freopen("data.txt","w",stdout); // write into data.txt
     fileRead log1(filename);
-    
-	output(log1);
 	
-	freopen("data.txt","w",stdout); // write into data.txt 
-	parse p(log1);
-	
-    
-    
-    
-    
     return 0;
-}
-
-void output(fileRead log1)
-{
-	int words = 0;
-    int count = log1.getAddress().size();
-    for (int i = 0; i < count; i++)
-    {
-		cout << i << " Time: " << log1.getRelTime()[i] << endl;
-	}
 }
