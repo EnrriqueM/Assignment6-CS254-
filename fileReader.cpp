@@ -15,7 +15,6 @@
 #include <fstream>
 #include <string>
 #include <cmath>
-#include <vector>
 #include <sstream>
 #include <iostream>
 #include <iomanip>
@@ -107,8 +106,8 @@ bool fileRead::checkAddress(string a)
     
     if(addressTemp == 0x40000810)
     {
-        rev=false;
-        order=0;
+        rev=false;//for order use
+        order=0;//for order use
         typeTemp = "SD";
         parser(addressTemp, dataTemp, sizeTemp, cycleTemp, " S-to-D: ");
         
@@ -116,15 +115,15 @@ bool fileRead::checkAddress(string a)
     }
     else if(addressTemp >= 0x40000818 && addressTemp <= 0x4000086B)
     {
-        order++;
+        order++;//for order use
         typeTemp = "SD";
         parser(addressTemp, dataTemp, sizeTemp, cycleTemp, " S-to-D: ");
         return true;
     }
     else if (addressTemp == 0x40000C18)
     {
-        rev=false;
-        order=0;
+        rev=false;//for order use
+        order=0;//for order use
         typeTemp = "DS";
         parser(addressTemp, dataTemp, sizeTemp, cycleTemp, " D-to-S: ");
         
@@ -132,7 +131,7 @@ bool fileRead::checkAddress(string a)
     }
     else if (addressTemp >= 0x40000C20 && addressTemp <= 0x40000C73)
     {
-        order++;
+        order++;//for order use
         typeTemp = "DS";
         parser(addressTemp, dataTemp, sizeTemp, cycleTemp, " D-to-S: ");
         
@@ -144,20 +143,20 @@ bool fileRead::checkAddress(string a)
 
 void fileRead::parser(long int addressTemp, string dataTemp, string sizeTemp, string cycleTemp, string t){
 
-    if(order ==1 && (addressTemp == ( 0x40000810 + 8) || (addressTemp == ( 0x40000C18 + 8) )))
+    if(order ==1 && (addressTemp == ( 0x40000810 + 8) || (addressTemp == ( 0x40000C18 + 8) )))// to determine the order 
         rev = true;
 
     if ( addressTemp == 0x40000810 || addressTemp == 0x40000c18){
-        if ( ! first)
+        if ( ! first)//check if it is the new command 
             cout << endl;
         size = word::toInt(dataTemp)/2;
-        cout << "Line " << total << ": " << cycleTemp << t << size << " words" << endl;
+        cout << "Line " << total << ": " << cycleTemp << t << size << " words" << endl;//command head
         first = false;
 
     }
 
 
-    else if (rev)
+    else if (rev)// parse in acending order 
     {
 
         string data0 = dataTemp.substr(0,4);
@@ -184,7 +183,7 @@ void fileRead::parser(long int addressTemp, string dataTemp, string sizeTemp, st
             case 0x40000c6c : cout << "Line " << total <<": "; word::word38(data0);break;
             case 0x40000c70: cout << "Line " << total <<": "; word::word40(data0);cout << "Line " << total <<": ";word::word41(data1); break;                                    }
     }
-    else
+    else//parse in decending order 
     {
 
         string data0 = dataTemp.substr(0,4);
