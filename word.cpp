@@ -8,7 +8,7 @@
 //
 // Filename: word.cpp
 //
-// This class has 12 functions, each is specified to parse the 12 different words we dealing with in each command
+// This class has 12 functions, each is specified to parse one of the 12 different words we dealing with in each command
 
 #include "word.hpp"
 
