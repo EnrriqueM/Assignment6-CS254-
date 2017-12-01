@@ -12,8 +12,6 @@
 #define fileReader_hpp
 
 #include <string>
-#include <vector>
-
 #include <stdio.h>
 
 using namespace std;
